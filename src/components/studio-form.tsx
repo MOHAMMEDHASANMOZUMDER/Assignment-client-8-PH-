@@ -1,0 +1,14 @@
+"use client";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import type { Studio } from "@/lib/types";
+import { createStudio, updateStudio } from "@/lib/api";
+const fields = [["title", "Title"], ["category", "Category"], ["hourlyRate", "Hourly rate"], ["securityDeposit", "Security deposit"], ["maxCapacity", "Max capacity"], ["location", "Location"], ["imageUrl", "Image URL"]] as const;
+export function StudioForm({ studio }: { studio?: Studio }) {
+  const router = useRouter(); const [busy, setBusy] = useState(false);
+  const [form, setForm] = useState<Record<string, string>>({ title: studio?.title || "", category: studio?.category || "Photography", hourlyRate: String(studio?.hourlyRate || ""), securityDeposit: String(studio?.securityDeposit || ""), maxCapacity: String(studio?.maxCapacity || ""), location: studio?.location || "", imageUrl: studio?.imageUrl || "", overview: studio?.overview || "", amenities: studio?.amenities?.join(", ") || "" });
+  const change = (key: string, value: string) => setForm((old) => ({ ...old, [key]: value }));
+  const submit = async (event: React.FormEvent) => { event.preventDefault(); setBusy(true); try { const data = { ...form, hourlyRate: Number(form.hourlyRate), securityDeposit: Number(form.securityDeposit), maxCapacity: Number(form.maxCapacity), amenities: form.amenities.split(",").map((item) => item.trim()).filter(Boolean) }; if (studio) await updateStudio(studio._id, data); else await createStudio(data); toast.success(studio ? "Studio updated." : "Your studio is live."); router.push("/my-listings"); } catch (error) { toast.error(error instanceof Error ? error.message : "Could not save studio."); } finally { setBusy(false); } };
+  return <form className="form-card" onSubmit={submit}><div className="form-grid">{fields.map(([key, label]) => <div className="field" key={key}><label htmlFor={key}>{label}</label>{key === "category" ? <select id={key} value={form[key]} onChange={(e) => change(key, e.target.value)}><option>Photography</option><option>Film Stage</option><option>Podcast Lounge</option><option>Music Suite</option><option>Workshop</option></select> : <input id={key} required type={["hourlyRate", "securityDeposit", "maxCapacity"].includes(key) ? "number" : "text"} value={form[key]} onChange={(e) => change(key, e.target.value)} />}</div>)}<div className="field full"><label htmlFor="amenities">Amenities (comma separated)</label><input id="amenities" value={form.amenities} onChange={(e) => change("amenities", e.target.value)} placeholder="Natural light, Wi-Fi, Backdrop" /></div><div className="field full"><label htmlFor="overview">Overview</label><textarea id="overview" required value={form.overview} onChange={(e) => change("overview", e.target.value)} /></div></div><button className="button button-primary" disabled={busy}>{busy ? "Saving..." : studio ? "Save changes" : "Publish studio"}</button></form>;
+}
