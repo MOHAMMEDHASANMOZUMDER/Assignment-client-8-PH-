@@ -1,69 +1,46 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
+import { ArrowRight, BadgeCheck, Camera, Headphones, MapPin, ShieldCheck, Sparkles } from "lucide-react";
+import { StudioCard } from "@/components/studio-card";
+import { getStudios } from "@/lib/api";
 
-export default function Home() {
+export default async function Home() {
+  const studios = await getStudios(6);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main>
+      <section className="hero">
+        <div className="hero-copy">
+          <span className="eyebrow"><Sparkles size={15} /> Spaces for the next great take</span>
+          <h1>Make room for <em>creative</em> work.</h1>
+          <p>Discover extraordinary studios, sound stages, and production spaces designed for your best ideas.</p>
+          <div className="hero-actions">
+            <Link className="button button-primary" href="/studios">Explore studios <ArrowRight size={17} /></Link>
+            <Link className="button button-ghost" href="/add-studio">List your space</Link>
+          </div>
+          <div className="hero-proof"><BadgeCheck size={18} /> Verified spaces · Transparent pricing · Flexible hours</div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="hero-art">
+          <div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" />
+          <div className="hero-card"><Camera size={28} /><span>CREATE<br /><strong>WITHOUT<br />LIMITS</strong></span></div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="section">
+        <div className="section-heading"><div><span className="eyebrow">Handpicked for you</span><h2>Featured studios</h2></div><Link className="text-link" href="/studios">View all <ArrowRight size={16} /></Link></div>
+        <div className="studio-grid">{studios.map((studio) => <StudioCard key={studio._id} studio={studio} />)}</div>
+      </section>
+
+      <section className="section categories">
+        <div className="section-heading"><div><span className="eyebrow">Find your atmosphere</span><h2>Browse by category</h2></div></div>
+        <div className="category-grid">
+          {[["Photography", Camera], ["Sound stages", Headphones], ["Podcast rooms", Headphones], ["Art workshops", Sparkles]].map(([label, Icon]) => <Link className="category-card" href={`/studios?category=${encodeURIComponent(String(label))}`} key={String(label)}><span><Icon size={22} /></span><strong>{String(label)}</strong><ArrowRight size={16} /></Link>)}
+        </div>
+      </section>
+
+      <section className="section support-strip">
+        <div><ShieldCheck size={34} /><div><h3>Built for creators, backed by care.</h3><p>Verified hosts, clear policies, and support whenever your production needs it.</p></div></div>
+        <Link className="button button-dark" href="/studios">Find your space <ArrowRight size={17} /></Link>
+      </section>
+    </main>
   );
 }
