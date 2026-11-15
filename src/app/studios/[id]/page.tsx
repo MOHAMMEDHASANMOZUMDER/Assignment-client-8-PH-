@@ -5,11 +5,13 @@ import toast from "react-hot-toast";
 import { createBooking, getStudio } from "@/lib/api";
 import type { Studio } from "@/lib/types";
 import { useAuth } from "@/components/auth-provider";
+import { BookingModal } from "@/components/booking-modal";
 export default function StudioDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { user } = useAuth();
   const [studio, setStudio] = useState<Studio | null>(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
   const [form, setForm] = useState({
     date: "",
     startTime: "",
@@ -38,6 +40,7 @@ export default function StudioDetailsPage() {
       });
       toast.success("Booking request submitted.");
       setForm({ date: "", startTime: "", endTime: "", guests: "1" });
+      setBookingOpen(false);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Could not book this space.",
@@ -80,57 +83,12 @@ export default function StudioDetailsPage() {
             ${studio.hourlyRate}
             <small>/hour</small>
           </strong>
-          <form onSubmit={book}>
-            <div className="field">
-              <label>Date</label>
-              <input
-                type="date"
-                required
-                value={form.date}
-                onChange={(e) => setForm({ ...form, date: e.target.value })}
-              />
-            </div>
-            <div className="form-grid">
-              <div className="field">
-                <label>From</label>
-                <input
-                  type="time"
-                  required
-                  value={form.startTime}
-                  onChange={(e) =>
-                    setForm({ ...form, startTime: e.target.value })
-                  }
-                />
-              </div>
-              <div className="field">
-                <label>To</label>
-                <input
-                  type="time"
-                  required
-                  value={form.endTime}
-                  onChange={(e) =>
-                    setForm({ ...form, endTime: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-            <div className="field">
-              <label>Guests</label>
-              <input
-                type="number"
-                min="1"
-                max={studio.maxCapacity}
-                required
-                value={form.guests}
-                onChange={(e) => setForm({ ...form, guests: e.target.value })}
-              />
-            </div>
-            <button className="button button-primary" style={{ width: "100%" }}>
-              Book workspace
-            </button>
-          </form>
+          <button className="button button-primary" style={{ width: "100%" }} onClick={() => setBookingOpen(true)}>
+            Book workspace now
+          </button>
         </aside>
       </div>
+      {bookingOpen && <BookingModal studio={studio} form={form} setForm={setForm} onSubmit={book} onClose={() => setBookingOpen(false)} />}
     </main>
   );
 }

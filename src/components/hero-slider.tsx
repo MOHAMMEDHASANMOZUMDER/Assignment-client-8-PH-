@@ -1,7 +1,11 @@
 "use client";
+
 import Link from "next/link";
 import { ArrowRight, Camera, Headphones, Mic2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 const slides = [
   { eyebrow: "For the visual storytellers", title: "Light the scene.", text: "Cyc walls, daylight studios, and production-ready rooms for the work you want remembered.", icon: Camera },
@@ -10,28 +14,22 @@ const slides = [
 ];
 
 export function HeroSlider() {
-  const [active, setActive] = useState(0);
-  useEffect(() => {
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), 5000);
-    return () => window.clearInterval(timer);
-  }, []);
-  const slide = slides[active];
-  const Icon = slide.icon;
   return (
-    <section className="hero-slider">
-      <div className="hero-slide-copy">
-        <span className="eyebrow">{slide.eyebrow}</span>
-        <h1>{slide.title}</h1>
-        <p>{slide.text}</p>
-        <div className="hero-actions">
-          <Link className="button button-primary" href="/studios">Explore studios <ArrowRight size={17} /></Link>
-          <Link className="button button-ghost" href="/add-studio">Host your space</Link>
-        </div>
-        <div className="slider-dots" aria-label="Hero slides">
-          {slides.map((item, index) => <button key={item.title} className={index === active ? "slider-dot active" : "slider-dot"} aria-label={`Show slide ${index + 1}`} onClick={() => setActive(index)} />)}
-        </div>
-      </div>
-      <div className={`hero-art hero-art-${active + 1}`}><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" /><div className="hero-card"><Icon size={28} /><span>CREATE<br /><strong>WITHOUT<br />LIMITS</strong></span></div></div>
-    </section>
+    <Swiper className="hero-slider" modules={[Autoplay, Pagination]} autoplay={{ delay: 5000 }} pagination={{ clickable: true }} loop>
+      {slides.map(({ eyebrow, title, text, icon: Icon }, index) => (
+        <SwiperSlide className="hero-slide" key={title}>
+          <div className="hero-slide-copy">
+            <span className="eyebrow">{eyebrow}</span>
+            <h1>{title}</h1>
+            <p>{text}</p>
+            <div className="hero-actions">
+              <Link className="button button-primary" href="/studios">Explore studios <ArrowRight size={17} /></Link>
+              <Link className="button button-ghost" href="/add-studio">Host your space</Link>
+            </div>
+          </div>
+          <div className={`hero-art hero-art-${index + 1}`}><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" /><div className="hero-card"><Icon size={28} /><span>CREATE<br /><strong>WITHOUT<br />LIMITS</strong></span></div></div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
   );
 }
