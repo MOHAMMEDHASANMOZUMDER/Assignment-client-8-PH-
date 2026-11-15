@@ -54,6 +54,7 @@ export default function StudioDetailsPage() {
             : undefined
         }
       />
+      <div className="gallery-caption"><span className="pill">Studio gallery</span><span>{studio.imageUrl ? "Featured image" : "Image coming soon"}</span></div>
       <div className="detail-content">
         <div>
           <span className="pill">{studio.category}</span>
@@ -64,6 +65,7 @@ export default function StudioDetailsPage() {
           <p className="meta">
             Hosted by {studio.ownerName} · {studio.location}
           </p>
+          <div className="detail-specs"><span><strong>Capacity</strong>{studio.maxCapacity} people</span><span><strong>Deposit</strong>${studio.securityDeposit}</span><span><strong>Rating</strong>★ {studio.rating || "New"}</span></div>
           <div className="tag-row">
             {studio.amenities.map((amenity) => (
               <span className="pill" key={amenity}>
@@ -71,6 +73,7 @@ export default function StudioDetailsPage() {
               </span>
             ))}
           </div>
+          <section className="reviews"><h2>Reviews</h2><p className="empty">This space is ready for its first review.</p></section>
         </div>
         <aside className="detail-side">
           <strong>

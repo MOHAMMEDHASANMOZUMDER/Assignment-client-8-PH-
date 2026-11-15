@@ -9,3 +9,5 @@ Live site URL: `http://localhost:3000` (local development; deploy the client to 
 - Built with Next.js App Router, TypeScript, React Hot Toast, Express, and MongoDB.
 - Local setup: start the API with `npm start`, then run `cd client && npm run dev`.
 - Examiner test credentials: register a new account at `/register` using any valid email and a password containing uppercase, lowercase, and six or more characters.
+- Image uploads: copy `.env.example` to `.env.local` and add an ImgBB API key for the device upload option.
+- Deployment: import this `client` folder into Vercel and set `API_URL` to the deployed server URL.

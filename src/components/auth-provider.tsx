@@ -9,6 +9,8 @@ const AuthContext = createContext<AuthContextType>({ user: null, loading: true, 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null); const [loading, setLoading] = useState(true);
   const refresh = async () => { try { setUser((await getMe()).user); } catch { setUser(null); } finally { setLoading(false); } };
+  // The initial session request synchronizes auth state with the server.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void refresh(); }, []);
   const logout = async () => { await apiLogout(); setUser(null); toast.success("You have been logged out."); };
   return <AuthContext.Provider value={{ user, loading, refresh, logout }}>{children}</AuthContext.Provider>;
