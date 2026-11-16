@@ -13,3 +13,4 @@ Live site URL: `http://localhost:3000` (local development; deploy the client to 
 - Booking workflow: open any studio detail page and use “Book workspace now” to launch the custom booking modal.
 - Image uploads: copy `.env.example` to `.env.local` and add an ImgBB API key for the device upload option.
 - Deployment: import this `client` folder into Vercel and set `API_URL` to the deployed server URL.
+- Vercel environment template: copy `.env.vercel.example` values into Vercel Project Settings; do not commit real secrets.
